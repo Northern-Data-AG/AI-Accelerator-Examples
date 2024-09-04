@@ -17,5 +17,7 @@ Launch it interactively:
 docker run -it --gpus all -v $(pwd):/workspace pytorch-dev
 ```
 
+add the option `--network=host` when you run multi-node.
+
 Attach vscode to the running container:
 ctrl+shit+p: Dev Containers: Attach to running container
