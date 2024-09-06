@@ -3,15 +3,25 @@ This tutorial guides you through setting up and running distributed training usi
 
 The tutorial follows step-by-step the PyTorch official [distributed training tutorial](https://pytorch.org/tutorials/beginner/ddp_series_intro.html?utm_source=distr_landing&utm_medium=ddp_series_intro) and its [source code](https://github.com/pytorch/examples/tree/main/distributed/ddp-tutorial-series).
 
-# Setup the development environment
+# Clone the repo
 
-Let's set up our development environment using Docker. First, you can build the container as `docker build -t pytorch-dev .` and launch it interactively `docker run -it --gpus all -v $(pwd):/workspace pytorch-dev`. This creates a Docker container with all necessary dependencies and mounts your current directory as a volume.
+Clone the sub-repo within this folder
+```bash
+mkdir basic_parallelization
+cd basic_parallelization/
+git init
+git remote add origin git@github.com:pytorch/examples.git
+git fetch origin
+git config core.sparseCheckout true
+echo "distributed/ddp-tutorial-series/" >> .git/info/sparse-checkout
+git pull origin main 
+```
 
 # Single-gpu training
 
-Let's start with a simple single-GPU training script:
+Launch the previously built-container as `docker run -it --gpus all -v $(pwd):/workspace pytorch-dev` and, within the container, you can start with a simple single-GPU training script:
 ```bash
-python /workspace/basic_parallelization/singlegpu.py --total_epochs 50 --save_every 10 --batch_size 32 
+python /workspace/basic_parallelization/distributed/ddp-tutorial-series/singlegpu.py --total_epochs 50 --save_every 10 --batch_size 32 
 ```
 This script trains a basic Multi-Layer Perceptron (MLP) model on a single GPU. It's an excellent starting point to ensure everything is working correctly before moving to distributed training. The script uses standard PyTorch modules and utilities, including torch.nn for defining the model architecture and torch.optim for optimization.
 
@@ -26,7 +36,7 @@ Now that we have a working single-GPU script, let's scale up to multiple GPUs on
 
 Inside the running container, launch
 ```bash
-python /workspace/basic_parallelization/multigpu.py --total_epochs 50 --save_every 10 --batch_size 32 
+python /workspace/basic_parallelization/distributed/ddp-tutorial-series/multigpu.py --total_epochs 50 --save_every 10 --batch_size 32 
 ```
 
 # Multi-gpu training with torchrun
@@ -34,7 +44,7 @@ python /workspace/basic_parallelization/multigpu.py --total_epochs 50 --save_eve
 
 Inside the running container, launch
 ```bash
-torchrun --standalone --nproc_per_node=gpu /workspace/basic_parallelization/multigpu_torchrun.py --total_epochs 50 --save_every 10 --batch_size 32
+torchrun --standalone --nproc_per_node=gpu /workspace/basic_parallelization/distributed/ddp-tutorial-series/multigpu_torchrun.py --total_epochs 50 --save_every 10 --batch_size 32
 ```
 
 # Multi-node training
@@ -50,7 +60,7 @@ torchrun \
 --rdzv-id=456 \
 --rdzv-backend=c10d \
 --rdzv-endpoint=[ipv6_address_master_node]:29603 \
-basic_parallelization/multinode.py --total_epochs 50 --save_every 10 --batch_size 32
+basic_parallelization/distributed/ddp-tutorial-series/multinode.py --total_epochs 50 --save_every 10 --batch_size 32
 ```
 
 while inside the running container of the workernode, run:
@@ -62,7 +72,7 @@ torchrun \
 --rdzv-id=456 \
 --rdzv-backend=c10d \
 --rdzv-endpoint=[ipv6_address_master_node]:29603 \
-basic_parallelization/multinode.py --total_epochs 50 --save_every 10 --batch_size 32
+basic_parallelization/distributed/ddp-tutorial-series/multinode.py --total_epochs 50 --save_every 10 --batch_size 32
 ```
 
 If working correctly and using a `world_size=16`, you should see a batch size of 4 per each node, as 
