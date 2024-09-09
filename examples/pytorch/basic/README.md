@@ -21,11 +21,11 @@ git pull origin main
 
 Launch the previously built-container as `docker run -it --gpus all -v $(pwd):/workspace pytorch-dev` and, within the container, you can start with a simple single-GPU training script:
 ```bash
-python /workspace/basic_parallelization/distributed/ddp-tutorial-series/singlegpu.py --total_epochs 50 --save_every 10 --batch_size 32 
+python distributed/ddp-tutorial-series/single_gpu.py 50 10
 ```
 This script trains a basic Multi-Layer Perceptron (MLP) model on a single GPU. It's an excellent starting point to ensure everything is working correctly before moving to distributed training. The script uses standard PyTorch modules and utilities, including torch.nn for defining the model architecture and torch.optim for optimization.
 
-The --total_epochs flag sets the number of training epochs, --save_every determines how often to save checkpoints, and --batch_size sets the number of samples processed in each training step. These parameters can be adjusted based on your specific requirements and available computational resources.
+The 2 flags sets the number of training epochs (50) and how often to save checkpoints (10).
 
 # Multi-gpu training
 Now that we have a working single-GPU script, let's scale up to multiple GPUs on a single machine. We'll use PyTorch's DistributedDataParallel (DDP) for this purpose. DDP is a module wrapper that enables efficient multi-GPU training by automatically handling the distribution of data and gradients across multiple GPUs.
@@ -36,7 +36,7 @@ Now that we have a working single-GPU script, let's scale up to multiple GPUs on
 
 Inside the running container, launch
 ```bash
-python /workspace/basic_parallelization/distributed/ddp-tutorial-series/multigpu.py --total_epochs 50 --save_every 10 --batch_size 32 
+python distributed/ddp-tutorial-series/multigpu.py 50 10
 ```
 
 # Multi-gpu training with torchrun
@@ -44,7 +44,7 @@ python /workspace/basic_parallelization/distributed/ddp-tutorial-series/multigpu
 
 Inside the running container, launch
 ```bash
-torchrun --standalone --nproc_per_node=gpu /workspace/basic_parallelization/distributed/ddp-tutorial-series/multigpu_torchrun.py --total_epochs 50 --save_every 10 --batch_size 32
+torchrun --standalone --nproc_per_node=gpu distributed/ddp-tutorial-series/multigpu_torchrun.py 50 10
 ```
 
 # Multi-node training

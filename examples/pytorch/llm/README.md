@@ -19,12 +19,12 @@ which will clone the Pytorch's example files in the local folder called `pt-minG
 
 ## Run the training on a multi-gpu
 
-Launch the previously built container
+Inside the proper folder `cd distributed/minGPT-ddp/mingpt/`, you can launch the previously built container
 ```bash
 docker run -it --gpus all -v $(pwd):/workspace pytorch-dev`
 ```
 
 and inside the container, run
 ```bash
-torchrun --standalone --nproc_per_node=8 main.py
+torchrun --standalone --nproc_per_node=gpu main.py
 ```
