@@ -61,8 +61,8 @@ with tf.device('/CPU:0'):   # To choose a different GPU, use '/GPU:1'
 c = tf.matmul(a, b)
 ```
 
-#### `tf.strategy.OneDeviceStrategy`
-Another and more convenient way to set your compute source is by using `tf.strategy.OneDeviceStrategy`.
+#### `tf.distribute.OneDeviceStrategy`
+Another and more convenient way to set your compute source is by using `tf.distribute.OneDeviceStrategy`.
 Any variables and operations that are defined under the scope of this strategy are placed on the specified 
 device. The advantage of this method over the manual method described above is that you are already using 
 the `tf.distribute.Strategy` API and can therefore test your code on one device before switching to another 
@@ -125,4 +125,13 @@ model.evaluate(dataset)
 This is necessary to ensure that each replica receives mini-batches of the same size.
 
 ## Multi-Node training
-TODO: `tf.strategy.MultiWorkerMirroredStrategy`
+- We require a `TF_CONFIG` environment variable on each worker. The *cluster* part should be equal for all, but the *task* part may change
+- Usually the first worker in the cluster is the *chief*
+- `TF_CONFIG` is parsed at the time `MultiWorkerMirroredStrategy` is called, so the `TF_CONFIG` environment variable must be set before a `tf.distribute.Strategy` instance is created
+- Each variable created in the `scope` of the strategy is distributed to all replicas on all workers. They are all kept in sync
+
+```python
+import tensorflow as tf
+
+strategy = tf.distribute.MultiWorkerMirroredStrategy()
+```
