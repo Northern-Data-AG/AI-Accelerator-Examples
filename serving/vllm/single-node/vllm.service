@@ -1,0 +1,14 @@
+[Unit]
+Description=vLLM Server
+Requires=network-online.target systemd-resolved.service
+After=network-online.target systemd-resolved.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/ws/vllm
+ExecStart=/home/ubuntu/ws/vllm/.venv/bin/vllm serve bigcode/starcoder2-7b --dtype auto --api-key token-abc123
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
