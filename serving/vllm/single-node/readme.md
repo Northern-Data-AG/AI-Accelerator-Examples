@@ -17,7 +17,7 @@ Clone the repository.
 ```bash
 mkdir ws -p && cd ws
 git clone https://github.com/vllm-project/vllm.git && cd vllm
-# git checkout 9da25a88aa35da4b5ad7da545e6189e08c5f52f4
+# git checkout 0d2b55a86eb93394b38ce34e4c3a54dc1e969e07
 ```
 
 Install required binaries to setup vLLM
