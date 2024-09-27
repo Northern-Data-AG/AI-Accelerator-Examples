@@ -1,0 +1,16 @@
+[Unit]
+Description=NIM LLM
+Requires=network-online.target systemd-resolved.service
+After=network-online.target systemd-resolved.service
+
+[Service]
+Type=simple
+User=ubuntu
+Environment="MODEL_DIRECTORY=/srv/models"
+ExecStart=/usr/bin/docker run --rm --name nim_llm --gpus '"device=1,2,3,4"' -p 8000:8000 -v ${MODEL_DIRECTORY}:/opt/nim/.cache nvcr.io/nim/meta/llama-3.1-70b-instruct:1.2.1
+ExecStop=/usr/bin/docker stop nim_llm
+TimeoutStopSec=30
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
